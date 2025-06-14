@@ -4,7 +4,17 @@ import { orchestrate } from './utils/agent'
 import { useGenieStore } from './store/genieStore'
 
 function App() {
-  const { apiKey, setApiKey, prompt, status, updateStatus, logs } = useGenieStore()
+  const {
+    apiKey,
+    setApiKey,
+    prompt,
+    setPrompt,
+    plan,
+    code,
+    status,
+    updateStatus,
+    logs,
+  } = useGenieStore()
 
   useEffect(() => {
     if (['REFINING', 'PLANNING', 'CODING'].includes(status)) {
@@ -27,7 +37,7 @@ function App() {
         <label className="block text-sm">Prompt</label>
         <textarea
           value={prompt}
-          onChange={(e) => useGenieStore.setState({ prompt: e.target.value })}
+          onChange={(e) => setPrompt(e.target.value)}
           className="border p-1 w-full text-black"
         />
       </div>
@@ -41,6 +51,18 @@ function App() {
       <div>
         <strong>Status:</strong> {status}
       </div>
+      {plan && (
+        <div>
+          <strong>Plan:</strong>
+          <pre>{plan}</pre>
+        </div>
+      )}
+      {code && (
+        <div>
+          <strong>Code:</strong>
+          <pre>{code}</pre>
+        </div>
+      )}
       <ul>
         {logs.map((l, i) => (
           <li key={i}>{l.type}: {l.message}</li>

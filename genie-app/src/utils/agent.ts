@@ -1,5 +1,10 @@
 import { useGenieStore } from '../store/genieStore'
 
+async function fakeOpenAI(prompt: string) {
+  await delay(50)
+  return `${prompt} - result`
+}
+
 async function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
@@ -13,22 +18,23 @@ export async function runRefinementPhase() {
     updateStatus('ERROR')
     return
   }
-  // Simulate analysis
   addLog('Prompt looks good', 'system')
   updateStatus('PLANNING')
 }
 
 export async function runPlanningPhase() {
-  const { addLog, updateStatus } = useGenieStore.getState()
+  const { prompt, addLog, setPlan, updateStatus } = useGenieStore.getState()
   addLog('Generating plan...')
-  await delay(100)
+  const plan = await fakeOpenAI(prompt)
+  setPlan(plan)
   updateStatus('CODING')
 }
 
 export async function runCodingPhase() {
-  const { addLog, updateStatus } = useGenieStore.getState()
+  const { plan, addLog, setCode, updateStatus } = useGenieStore.getState()
   addLog('Generating code...')
-  await delay(100)
+  const code = await fakeOpenAI(plan)
+  setCode(code)
   updateStatus('COMPLETED')
 }
 
